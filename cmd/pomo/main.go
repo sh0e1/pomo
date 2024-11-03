@@ -8,5 +8,6 @@ import (
 )
 
 func main() {
-	os.Exit(cmd.Run(context.Background()))
+	code := cmd.Run(context.Background())
+	os.Exit(int(code))
 }

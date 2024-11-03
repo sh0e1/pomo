@@ -2,10 +2,24 @@ package cmd
 
 import (
 	"context"
-	"fmt"
+	"os"
+
+	"github.com/sh0e1/pomo/internal/cmd/root"
 )
 
-func Run(ctx context.Context) int {
-	fmt.Println("Hello, Pomo!")
-	return 0
+type exitCode int
+
+const (
+	exitCodeOK    exitCode = 0
+	exitCodeError exitCode = 1
+)
+
+func Run(ctx context.Context) exitCode {
+	cmd := root.NewCmdRoot()
+	if err := cmd.ExecuteContext(ctx); err != nil {
+		cmd.SetOutput(os.Stderr)
+		cmd.Println(err)
+		return exitCodeError
+	}
+	return exitCodeOK
 }
