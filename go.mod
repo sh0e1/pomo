@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.2.1
+	github.com/charmbracelet/bubbletea v1.2.4
 	github.com/spf13/cobra v1.8.1
 )
 
