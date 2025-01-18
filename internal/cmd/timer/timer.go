@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/timer"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/gen2brain/beeep"
 	"github.com/spf13/cobra"
 )
 
@@ -78,6 +79,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.keymap.stop.SetEnabled(m.timer.Running())
 		m.keymap.start.SetEnabled(!m.timer.Running())
 		return m, cmd
+	case timer.TimeoutMsg:
+		m.quitting = true
+		_ = beeep.Notify("pomo", "timer has expired", "")
+		return m, tea.Quit
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keymap.quit):
