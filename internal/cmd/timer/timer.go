@@ -33,7 +33,6 @@ type model struct {
 	keymap   keymap
 	help     help.Model
 	quitting bool
-	err      error
 }
 
 type keymap struct {
@@ -59,6 +58,7 @@ func initModel() model {
 		},
 		help: help.New(),
 	}
+
 	m.keymap.start.SetEnabled(false)
 	return m
 }
