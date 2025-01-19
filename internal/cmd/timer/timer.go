@@ -14,25 +14,29 @@ import (
 )
 
 func NewCommand() *cobra.Command {
+	var workInterval time.Duration
+
 	cmd := &cobra.Command{
 		Use:   "timer",
-		Short: "Start the pomo timer",
+		Short: "start timer",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, err := tea.NewProgram(initModel()).Run()
+			_, err := tea.NewProgram(initModel(workInterval)).Run()
 			return err
 		},
 	}
+
+	cmd.Flags().DurationVarP(&workInterval, "work-interval", "w", 25*time.Minute, "work time interval")
+
 	return cmd
 }
 
-const timeout = 25 * time.Minute
-
 type model struct {
-	timer    timer.Model
-	spinner  spinner.Model
-	keymap   keymap
-	help     help.Model
-	quitting bool
+	timer        timer.Model
+	spinner      spinner.Model
+	keymap       keymap
+	help         help.Model
+	quitting     bool
+	workInterval time.Duration
 }
 
 type keymap struct {
@@ -46,9 +50,9 @@ func (k keymap) bindings() []key.Binding {
 	return []key.Binding{k.start, k.stop, k.reset, k.quit}
 }
 
-func initModel() model {
+func initModel(workInterval time.Duration) model {
 	m := model{
-		timer:   timer.New(timeout),
+		timer:   timer.New(workInterval),
 		spinner: spinner.New(spinner.WithSpinner(spinner.Dot)),
 		keymap: keymap{
 			start: key.NewBinding(key.WithKeys("s"), key.WithHelp("s", "start")),
@@ -56,7 +60,8 @@ func initModel() model {
 			reset: key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "reset")),
 			quit:  key.NewBinding(key.WithKeys("q", "esc", "ctrl+c"), key.WithHelp("q", "quit")),
 		},
-		help: help.New(),
+		help:         help.New(),
+		workInterval: workInterval,
 	}
 
 	m.keymap.start.SetEnabled(false)
@@ -89,7 +94,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keymap.reset):
-			m.timer.Timeout = timeout
+			m.timer.Timeout = m.workInterval
 			return m, nil
 		case key.Matches(msg, m.keymap.start, m.keymap.stop):
 			return m, m.timer.Toggle()
