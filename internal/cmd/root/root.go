@@ -2,6 +2,7 @@ package root
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
 	"github.com/sh0e1/pomo/internal/cmd/timer"
@@ -38,5 +39,5 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return "Hello, pomo!!"
+	return lipgloss.NewStyle().Bold(true).Render("Hello, pomo!!")
 }
