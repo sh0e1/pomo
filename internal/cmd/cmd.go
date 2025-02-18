@@ -17,7 +17,7 @@ const (
 func Run(ctx context.Context) exitCode {
 	cmd := root.NewCommand()
 	if err := cmd.ExecuteContext(ctx); err != nil {
-		cmd.SetOutput(os.Stderr)
+		cmd.SetErr(os.Stderr)
 		cmd.Println(err)
 		return exitCodeError
 	}
