@@ -11,10 +11,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func initWorkModel(cfg *Config) WorkModel {
+func initWorkModel(interval time.Duration) WorkModel {
 	return WorkModel{
-		interval: cfg.WorkInterval,
-		timer:    timer.New(cfg.WorkInterval),
+		interval: interval,
+		timer:    timer.New(interval),
 		keymaps: workModelKeymaps{
 			toggle: key.NewBinding(key.WithKeys("s"), key.WithHelp("s", "Start/Pause")),
 			reset:  key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "Reset")),
@@ -43,14 +43,13 @@ func (m WorkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.timer, cmd = m.timer.Update(msg)
 		return m, cmd
 	case timer.TimeoutMsg:
-		return m, CompletedWork
+		return m, WorkCompleted
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keymaps.toggle):
 			return m, m.timer.Toggle()
 		case key.Matches(msg, m.keymaps.reset):
-			m.timer.Timeout = m.interval
-			return m, nil
+			return m.Reset(), nil
 		}
 	}
 	return m, nil
@@ -63,6 +62,11 @@ func (m WorkModel) View() string {
 		fmt.Sprintf("Working on it... %s Remaining\n", m.timer.View()) +
 		"\n" +
 		m.help.ShortHelpView(m.keymaps.bindings())
+}
+
+func (m WorkModel) Reset() WorkModel {
+	m.timer.Timeout = m.interval
+	return m
 }
 
 type workModelKeymaps struct {
