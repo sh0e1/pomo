@@ -9,17 +9,20 @@ import (
 )
 
 func NewCommand() *cobra.Command {
-	var workInterval time.Duration
+	cfg := &timer.Config{}
 
 	cmd := &cobra.Command{
 		Use:   "timer",
-		Short: "start timer",
+		Short: "start pomodoro timer 🍅",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return timer.Run(workInterval)
+			return timer.Run(cfg)
 		},
 	}
 
-	cmd.Flags().DurationVarP(&workInterval, "work-interval", "w", 25*time.Minute, "work time interval")
+	cmd.Flags().DurationVarP(&cfg.WorkInterval, "work", "w", 25*time.Minute, "")
+	cmd.Flags().DurationVarP(&cfg.ShortBreakInterval, "short-break", "s", 5*time.Minute, "")
+	cmd.Flags().DurationVarP(&cfg.LongBreakInterval, "long-break", "l", 15*time.Minute, "")
+	cmd.Flags().IntVarP(&cfg.Rounds, "rounds", "r", 4, "")
 
 	return cmd
 }
