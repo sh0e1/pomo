@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/timer"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func initWorkModel(cfg *Config) WorkModel {
@@ -59,7 +60,13 @@ func (m WorkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m WorkModel) View() string {
-	return fmt.Sprintf("Working on it... %s Remaining\n%s", m.timer.View(), m.help.ShortHelpView(m.keymaps.bindings()))
+	title := lipgloss.NewStyle().Bold(true).SetString("🍅 Pomodoro Timer")
+
+	return fmt.Sprintf("%s\n", title) +
+		"\n" +
+		fmt.Sprintf("Working on it... %s Remaining\n", m.timer.View()) +
+		"\n" +
+		m.help.ShortHelpView(m.keymaps.bindings())
 }
 
 type workModelKeymaps struct {
