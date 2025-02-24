@@ -10,11 +10,11 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func initWorkModel(cfg *Config) tea.Model {
+func initWorkModel(cfg *Config) WorkModel {
 	return WorkModel{
 		interval: cfg.WorkInterval,
 		timer:    timer.New(cfg.WorkInterval),
-		keymaps: keymaps{
+		keymaps: workModelKeymaps{
 			toggle: key.NewBinding(key.WithKeys("s"), key.WithHelp("s", "Start/Pause")),
 			reset:  key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "Reset")),
 			quit:   key.NewBinding(key.WithKeys("q"), key.WithHelp("q", "Quit")),
@@ -26,7 +26,7 @@ func initWorkModel(cfg *Config) tea.Model {
 type WorkModel struct {
 	interval time.Duration
 	timer    timer.Model
-	keymaps  keymaps
+	keymaps  workModelKeymaps
 	help     help.Model
 }
 
@@ -62,12 +62,12 @@ func (m WorkModel) View() string {
 	return fmt.Sprintf("Working on it... %s Remaining\n%s", m.timer.View(), m.help.ShortHelpView(m.keymaps.bindings()))
 }
 
-type keymaps struct {
+type workModelKeymaps struct {
 	toggle key.Binding
 	reset  key.Binding
 	quit   key.Binding
 }
 
-func (k keymaps) bindings() []key.Binding {
+func (k workModelKeymaps) bindings() []key.Binding {
 	return []key.Binding{k.toggle, k.reset, k.quit}
 }
