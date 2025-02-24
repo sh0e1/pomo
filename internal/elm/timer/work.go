@@ -18,7 +18,6 @@ func initWorkModel(cfg *Config) WorkModel {
 		keymaps: workModelKeymaps{
 			toggle: key.NewBinding(key.WithKeys("s"), key.WithHelp("s", "Start/Pause")),
 			reset:  key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "Reset")),
-			quit:   key.NewBinding(key.WithKeys("q"), key.WithHelp("q", "Quit")),
 		},
 		help: help.New(),
 	}
@@ -44,7 +43,7 @@ func (m WorkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.timer, cmd = m.timer.Update(msg)
 		return m, cmd
 	case timer.TimeoutMsg:
-		return m, tea.Quit
+		return m, CompletedWork
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keymaps.toggle):
@@ -52,8 +51,6 @@ func (m WorkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keymaps.reset):
 			m.timer.Timeout = m.interval
 			return m, nil
-		case key.Matches(msg, m.keymaps.quit):
-			return m, tea.Quit
 		}
 	}
 	return m, nil
@@ -61,7 +58,6 @@ func (m WorkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m WorkModel) View() string {
 	title := lipgloss.NewStyle().Bold(true).SetString("🍅 Pomodoro Timer")
-
 	return fmt.Sprintf("%s\n", title) +
 		"\n" +
 		fmt.Sprintf("Working on it... %s Remaining\n", m.timer.View()) +
@@ -72,9 +68,8 @@ func (m WorkModel) View() string {
 type workModelKeymaps struct {
 	toggle key.Binding
 	reset  key.Binding
-	quit   key.Binding
 }
 
 func (k workModelKeymaps) bindings() []key.Binding {
-	return []key.Binding{k.toggle, k.reset, k.quit}
+	return []key.Binding{k.toggle, k.reset}
 }
