@@ -49,18 +49,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keymaps.quit):
 			return m, tea.Quit
 		}
-	default:
-		if m.isWorking {
-			model, cmd := m.workModel.Update(msg)
-			m.workModel = model.(WorkModel)
-			return m, cmd
-		}
-		if m.isBreaking {
-			model, cmd := m.breakModel.Update(msg)
-			m.breakModel = model.(BreakModel)
-			return m, cmd
-		}
 	}
+
+	if m.isWorking {
+		model, cmd := m.workModel.Update(msg)
+		m.workModel = model.(WorkModel)
+		return m, cmd
+	}
+
+	if m.isBreaking {
+		model, cmd := m.breakModel.Update(msg)
+		m.breakModel = model.(BreakModel)
+		return m, cmd
+	}
+
 	return m, nil
 }
 
