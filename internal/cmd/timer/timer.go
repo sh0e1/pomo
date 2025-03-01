@@ -9,7 +9,7 @@ import (
 )
 
 func NewCommand() *cobra.Command {
-	cfg := &timer.Config{}
+	cfg := timer.Config{}
 
 	cmd := &cobra.Command{
 		Use:   "timer",
