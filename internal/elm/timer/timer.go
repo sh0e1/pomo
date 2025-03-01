@@ -12,7 +12,7 @@ func Run(config Config) error {
 
 func initModel(config Config) Model {
 	m := Model{
-		work:      initWorkModel(config.WorkInterval),
+		workModel: initWorkModel(config.WorkInterval),
 		isWorking: true,
 		keymaps: keymaps{
 			quit: key.NewBinding(key.WithKeys("q", tea.KeyCtrlC.String()), key.WithHelp("q", "Quit")),
@@ -22,8 +22,12 @@ func initModel(config Config) Model {
 }
 
 type Model struct {
-	work      WorkModel
+	workModel WorkModel
 	isWorking bool
+
+	breakModel BreakModel
+	isBreaking bool
+
 	keymaps keymaps
 }
 
@@ -42,8 +46,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	default:
 		if m.isWorking {
-			model, cmd := m.work.Update(msg)
-			m.work = model.(WorkModel)
+			model, cmd := m.workModel.Update(msg)
+			m.workModel = model.(WorkModel)
 			return m, cmd
 		}
 	}
@@ -52,7 +56,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.isWorking {
-		return m.work.View()
+		return m.workModel.View()
 	}
 	return ""
 }
