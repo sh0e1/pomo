@@ -4,14 +4,14 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func Run(cfg *Config) error {
+func Run(cfg Config) error {
 	_, err := tea.NewProgram(initModel(cfg)).Run()
 	return err
 }
 
-func initModel(cfg *Config) Model {
+func initModel(cfg Config) Model {
 	m := Model{
-		workModel: initWorkModel(cfg),
+		workModel: initWorkModel(cfg.WorkInterval),
 	}
 	return m
 }
