@@ -1,23 +1,28 @@
 package timer
 
 import (
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func Run(cfg Config) error {
-	_, err := tea.NewProgram(initModel(cfg)).Run()
+func Run(config Config) error {
+	_, err := tea.NewProgram(initModel(config)).Run()
 	return err
 }
 
-func initModel(cfg Config) Model {
+func initModel(config Config) Model {
 	m := Model{
-		workModel: initWorkModel(cfg.WorkInterval),
+		workModel: initWorkModel(config.WorkInterval),
+		keymaps: keymaps{
+			quit: key.NewBinding(key.WithKeys("q", tea.KeyCtrlC.String()), key.WithHelp("q", "Quit")),
+		},
 	}
 	return m
 }
 
 type Model struct {
 	workModel WorkModel
+	keymaps   keymaps
 }
 
 var _ tea.Model = Model{}
@@ -27,9 +32,20 @@ func (m Model) Init() tea.Cmd {
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	return m.workModel.Update(msg)
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch {
+		case key.Matches(msg, m.keymaps.quit):
+			return m, tea.Quit
+		}
+	}
+	return m, nil
 }
 
 func (m Model) View() string {
-	return m.workModel.View()
+	return ""
+}
+
+type keymaps struct {
+	quit key.Binding
 }
