@@ -55,6 +55,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.workModel = model.(WorkModel)
 			return m, cmd
 		}
+		if m.isBreaking {
+			model, cmd := m.breakModel.Update(msg)
+			m.breakModel = model.(BreakModel)
+			return m, cmd
+		}
 	}
 	return m, nil
 }
