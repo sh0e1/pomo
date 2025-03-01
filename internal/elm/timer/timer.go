@@ -41,6 +41,9 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case WorkCompletedMsg:
+		m = m.Breaking()
+		return m, m.breakModel.Init()
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keymaps.quit):
@@ -66,6 +69,9 @@ func (m Model) Breaking() Model {
 func (m Model) View() string {
 	if m.isWorking {
 		return m.workModel.View()
+	}
+	if m.isBreaking {
+		return m.breakModel.View()
 	}
 	return ""
 }
