@@ -17,6 +17,7 @@ func initModel(config Config) Model {
 		keymaps: keymaps{
 			quit: key.NewBinding(key.WithKeys("q", tea.KeyCtrlC.String()), key.WithHelp("q", "Quit")),
 		},
+		config: config,
 	}
 	return m
 }
@@ -29,6 +30,7 @@ type Model struct {
 	isBreaking bool
 
 	keymaps keymaps
+	config  Config
 }
 
 var _ tea.Model = Model{}
@@ -52,6 +54,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 	return m, nil
+}
+
+func (m Model) Breaking() Model {
+	m.isWorking = false
+	m.breakModel = initBreakModel(m.config.ShortBreakInterval)
+	m.isBreaking = true
+	return m
 }
 
 func (m Model) View() string {
