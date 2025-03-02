@@ -14,6 +14,10 @@ lint: ## Run golangci-lint after installation if golangci-lint is not installed
 	fi
 	$(GOLANGCI_LINT) run ./...
 
+.PHONY: test
+test: ## Run tests with coverage
+	go test -v -race -count=1 -cover ./...
+
 .PHONY: help
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-30s %s\n", $$1, $$2}'
