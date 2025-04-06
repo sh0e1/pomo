@@ -1,18 +1,34 @@
+version: "2"
 linters:
   enable:
     - errcheck
-    - gosimple
     - govet
     - ineffassign
     - staticcheck
     - unused
+    - gosec
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
     - gofmt
     - goimports
-    - gosec
-
-linters-settings:
-  goimports:
-    # A comma-separated list of prefixes, which, if set, checks import paths
-    # with the given prefixes are grouped after 3rd-party packages.
-    # Default: ""
-    local-prefixes: github.com/sh0e1/pomo
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/sh0e1/pomo
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
