@@ -5,7 +5,7 @@ SHELL := bash
 BIN_DIR := $(shell pwd)/bin
 
 GOLANGCI_LINT         := $(abspath $(BIN_DIR)/golangci-lint)
-GOLANGCI_LINT_VERSION := v1.63.4
+GOLANGCI_LINT_VERSION := v2.0.2
 
 .PHONY: lint
 lint: ## Run golangci-lint after installation if golangci-lint is not installed
